@@ -43,7 +43,7 @@ if(isset($_POST['searchbtn'])){
         $sql = "SELECT * FROM internships  
         JOIN student ON internships.stuID = student.stuID 
         JOIN office  ON internships.officeID  = office.officeID 
-        WHERE student.stuID  LIKE '%".$search."%' AND checkInternships = 1 ";     
+        WHERE student.stuID  LIKE '%".$search."%' AND checkInternships = 1 ORDER BY internships.years  DESC ";     
     $result = $conn->query($sql);
     }
 
@@ -52,7 +52,7 @@ if(isset($_POST['searchbtn'])){
         JOIN student ON internships.stuID = student.stuID 
         JOIN office  ON internships.officeID  = office.officeID 
         WHERE student.stuNme  LIKE '%".$search."%' AND checkInternships = 1 
-        OR student.stuSurnme  LIKE '%".$search."%' AND checkInternships = 1 ";     
+        OR student.stuSurnme  LIKE '%".$search."%' AND checkInternships = 1 ORDER BY internships.years  DESC ";     
     $result = $conn->query($sql);
     }
 
@@ -60,7 +60,15 @@ if(isset($_POST['searchbtn'])){
         $sql = "SELECT * FROM internships  
         JOIN student ON internships.stuID = student.stuID 
         JOIN office  ON internships.officeID  = office.officeID 
-        WHERE internships.officeID  LIKE '%".$search."%' AND checkInternships = 1 ";     
+        WHERE internships.officeID  LIKE '%".$search."%' AND checkInternships = 1 ORDER BY internships.years  DESC ";     
+    $result = $conn->query($sql);
+    }
+
+    else if($valueFrom==3){
+        $sql = "SELECT * FROM internships  
+        JOIN student ON internships.stuID = student.stuID 
+        JOIN office  ON internships.officeID  = office.officeID 
+        WHERE internships.years  LIKE '%".$search."%' AND checkInternships = 1 ORDER BY internships.years  DESC ";     
     $result = $conn->query($sql);
     }
     // ============================การแบ่งหน้า=====================================================
@@ -112,7 +120,7 @@ else{
     $sql = "SELECT * FROM internships 
         JOIN student ON internships.stuID = student.stuID 
         JOIN office  ON internships.officeID  = office.officeID 
-        WHERE checkInternships = 1 ";
+        WHERE checkInternships = 1  ORDER BY internships.years  DESC ";
     $result = $conn->query($sql);
 
         // ============================การแบ่งหน้า=====================================================
@@ -189,6 +197,11 @@ echo "<select class='form-control' name='searchForm' onchange='document.search.s
             echo'selected';
         }
         echo ">ค้นหาตามสถานประกอบการ</option>";
+    echo "<option value='3'";
+        if($_POST['searchForm']==3){
+            echo'selected';
+        }
+        echo ">ค้นหาตามปีการศึกษา</option>";
     echo "</select>";
     echo "</div>";
 echo "</div>";
@@ -220,9 +233,30 @@ else if( $searchForm==2){
         }
         echo"</select>";
     echo "<input type='hidden' name='valueFrom' value='2'>";
+    echo "</div>";    
+
+}
+else if( $searchForm==3){
+
+    echo "<div class='col-sm-2'>";  
+    $sql4 = "SELECT *  FROM internships GROUP BY years  ORDER BY years ASC"  ;
+    $result4 = $conn->query($sql4);
+     echo "<div class='form-group'>";
+        echo "<select class='form-control' name='search' >";
+        echo "<option value=''>- แสดงทั้งหมด -</option>";
+        while($row4 = $result4->fetch_assoc()){
+            echo "<option value='".$row4['years']."'";
+             if($_POST['search']==$row4['years']){
+                echo'selected';
+            } 
+            echo ">".$row4['years']."</option>";
+        }
+        echo"</select>";
+    echo "</div>";
+ 
+    echo "<input type='hidden' name='valueFrom' value='3'>";
     echo "</div>";
 
-    
 }
 
 echo "<div class='col-sm-1'>";

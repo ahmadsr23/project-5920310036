@@ -44,7 +44,7 @@ if(isset($_POST['searchbtn'])){
         $sql = "SELECT * FROM cooperativetraining  
         JOIN student ON cooperativetraining.stuID = student.stuID 
         JOIN office  ON cooperativetraining.officeID  = office.officeID 
-        WHERE student.stuID  LIKE '%".$search."%' AND checkCooperativetraining = 1 ";     
+        WHERE student.stuID  LIKE '%".$search."%' AND checkCooperativetraining = 1 ORDER BY cooperativetraining.years DESC ";     
     $result = $conn->query($sql);
     }
 
@@ -53,7 +53,7 @@ if(isset($_POST['searchbtn'])){
         JOIN student ON cooperativetraining.stuID = student.stuID 
         JOIN office  ON cooperativetraining.officeID  = office.officeID 
         WHERE student.stuNme  LIKE '%".$search."%' AND checkCooperativetraining = 1 
-        OR student.stuSurnme  LIKE '%".$search."%' AND checkCooperativetraining = 1 ";     
+        OR student.stuSurnme  LIKE '%".$search."%' AND checkCooperativetraining = 1 ORDER BY cooperativetraining.years DESC ";     
     $result = $conn->query($sql);
     }
 
@@ -61,7 +61,14 @@ if(isset($_POST['searchbtn'])){
         $sql = "SELECT * FROM cooperativetraining  
         JOIN student ON cooperativetraining.stuID = student.stuID 
         JOIN office  ON cooperativetraining.officeID  = office.officeID 
-        WHERE cooperativetraining.officeID  LIKE '%".$search."%' AND checkCooperativetraining = 1 ";     
+        WHERE cooperativetraining.officeID  LIKE '%".$search."%' AND checkCooperativetraining = 1 ORDER BY cooperativetraining.years DESC ";     
+    $result = $conn->query($sql);
+    }
+    else if($valueFrom==3){
+        $sql = "SELECT * FROM cooperativetraining  
+        JOIN student ON cooperativetraining.stuID = student.stuID 
+        JOIN office  ON cooperativetraining.officeID  = office.officeID 
+        WHERE cooperativetraining.years  LIKE '%".$search."%' AND checkCooperativetraining = 1 ORDER BY cooperativetraining.years DESC ";     
     $result = $conn->query($sql);
     }
 
@@ -114,7 +121,7 @@ else{
 $sql = "SELECT * FROM cooperativetraining
         JOIN student ON cooperativetraining.stuID = student.stuID 
         JOIN office  ON cooperativetraining.officeID  = office.officeID 
-        WHERE checkCooperativetraining = 1 ";
+        WHERE checkCooperativetraining = 1 ORDER BY cooperativetraining.years DESC ";
 $result = $conn->query($sql);
 
 // ============================การแบ่งหน้า=====================================================
@@ -191,6 +198,11 @@ echo "<select class='form-control' name='searchForm' onchange='document.search.s
             echo'selected';
         }
         echo ">ค้นหาตามสถานประกอบการ</option>";
+    echo "<option value='3'";
+        if($_POST['searchForm']==3){
+            echo'selected';
+        }
+        echo ">ค้นหาตามปีการศึกษา</option>";
     echo "</select>";
     echo "</div>";
 echo "</div>";
@@ -225,6 +237,28 @@ else if( $searchForm==2){
     echo "</div>";
 
     
+}
+else if( $searchForm==3){
+
+    echo "<div class='col-sm-2'>";  
+    $sql4 = "SELECT *  FROM cooperativetraining GROUP BY years  ORDER BY years ASC"  ;
+    $result4 = $conn->query($sql4);
+     echo "<div class='form-group'>";
+        echo "<select class='form-control' name='search' >";
+        echo "<option value=''>- แสดงทั้งหมด -</option>";
+        while($row4 = $result4->fetch_assoc()){
+            echo "<option value='".$row4['years']."'";
+             if($_POST['search']==$row4['years']){
+                echo'selected';
+            } 
+            echo ">".$row4['years']."</option>";
+        }
+        echo"</select>";
+    echo "</div>";
+ 
+    echo "<input type='hidden' name='valueFrom' value='3'>";
+    echo "</div>";
+
 }
 
 echo "<div class='col-sm-1'>";
